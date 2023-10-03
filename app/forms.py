@@ -3,5 +3,5 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired, EqualTo
 
 class PokeForm(FlaskForm):
-    pokemon = StringField('Pokemon Name', validators = [DataRequired()])
+    pokemon = StringField('Pokemon Name / Random Number', validators = [DataRequired()])
     submit = SubmitField('Search Pokemon')
