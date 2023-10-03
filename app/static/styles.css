@@ -1,0 +1,22 @@
+body {
+    background-image: url('../static/poke_home.webp'); 
+    background-size: cover;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-attachment: fixed; 
+    overflow: hidden;
+}
+
+.welcome {
+    
+    color: white;
+    width: 50%; /* Set the width to 50% to position it on the left side */
+    height: 100vh;
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: flex-start; /* Align text to the left */
+    justify-content: center;
+    font-size: 2em;
+    padding: 5px; /* Add padding for better spacing */
+    margin-top: -90px;
+}
