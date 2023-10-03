@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokemon Search</title>
+</head>
+<body>
+    <form action="{{url_for('get_pokemon_info')}}"method="POST">
+        {{form.hidden_tag()}}
+        <div class="pokemon_submit">
+            {{form.pokemon.label()}}
+            {{form.pokemon()}}
+          </div>
+          {{form.submit()}}
+
+    </form>
+    {% if poke_info %}
+     <table class ="pokemon_info">
+        <thead>
+            <tr>
+                <th scope ="col">Name</th>
+                <th scope ="col">Ability 1</th>
+                <th scope ="col">Ability 2</th>
+                <th scope ="col">Experience</th>
+                <th scope ="col">Front Shiny</th>
+                <th scope ="col">Attack</th>
+                <th scope ="col">HP</th>
+                <th scope ="col">Defense</th>
+            </tr>
+        </thead>
+        <tbody>
+                <tr>
+                    <th>{{poke_info['name']}}</th>
+                    <td>{{poke_info['ability1_name']}}</td>
+                    <td>{{poke_info['ability12_name']}}</td>
+                    <td>{{poke_info['base_experience']}}</td>
+                    <td>{{poke_info['sprite_frontshiny']}}</td>
+                    <td>{{poke_info['attack_stat']}}</td>
+                    <td>{{poke_info['hp_stat']}}</td>
+                    <td>{{poke_info['defense_stat']}}</td>
+                    
+                </tr>
+        </tbody>
+     </table>
+    {% endif %}
+</body>
+
+
+</html>
