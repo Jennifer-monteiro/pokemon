@@ -3,6 +3,7 @@
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    background-color: #fffefe; /* Set a background color */
 }
 
 /* Custom styling for the input form */
@@ -39,3 +40,65 @@
 .btn-primary:hover {
     background-color: #0056b3;
 }
+
+.card {
+    max-width:300px;
+    width: 100%;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.5);
+}
+
+.attribute-block {
+    background-color: #f8f8f8;
+    border-radius: 15px;
+    padding: 20px;
+    margin-right: 10px;
+    font-family: 'PokemonFont', sans-serif; /* Use PokemonFont for the attribute text */
+}
+
+.attribute-block p {
+    margin-bottom: 8px; /* Add some vertical spacing between attributes */
+    display: flex; /* Use flexbox to align label and value */
+    justify-content: space-between; /* Space evenly between label and value */
+}
+
+.attribute-block strong {
+    font-weight: bold;
+    color: #007bff; /* Set the desired label color */
+}
+
+.attribute-block span {
+    color: #333; /* Set the desired value color */
+}
+
+.image-block {
+
+        background-color: #f8f8f8;
+        border-radius: 15px;
+        padding: 20px;
+        margin-left: 10px;
+        text-align: center; /* Add this line to center the content horizontally */
+    }
+    
+
+.card-img {
+        max-width: 100%; /* Ensure the image doesn't overflow the block */
+        max-height: 180px; /* Adjust the image height as needed */
+        margin: 0 auto; /* Center the image horizontally */
+        display: block; /* Remove any default inline behavior */
+    }
+
+.card-title {
+    text-align: center;
+   
+
+}
+
+.card-title {
+    text-align: center;
+    font-family: 'PokemonFont', sans-serif;
+    font-size: 24px; /* Adjust the font size as needed */
+    color: #ff9900; /* Set the desired text color */
+}
+

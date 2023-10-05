@@ -21,7 +21,7 @@ def get_pokemon_info():
             'ability1_name':data['abilities'][0]['ability']['name'],
            'ability2_name':data['abilities'][1]['ability']['name'],
             'base_experience':data['base_experience'],
-            'sprite_frontshiny':data['sprites']['front_shiny'],
+            'sprite_frontdefault': data['sprites']['other']['official-artwork']['front_default'],
             'attack_stat':data['stats'][1]['base_stat'],
             'hp_stat':data['stats'][0]['base_stat'],
             'defense_stat':data['stats'][2]['base_stat']
