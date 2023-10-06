@@ -102,3 +102,26 @@
     color: #ff9900; /* Set the desired text color */
 }
 
+/* Error background color */
+.error-section {
+    background-color: #ffcccc; /* Set your desired error background color */
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+/* Style the error message */
+.alert.alert-danger {
+    font-weight: bold;
+    color: #721c24; /* Text color for error message */
+    border-color: #f5c6cb; /* Border color for error message */
+}
+
+.funny-background {
+    /* Set your background image URL here */
+    background-image: url('/static/pikachu.png');
+    /* Set background size, repeat, and other properties as needed */
+    background-size: cover;
+    background-repeat: no-repeat;
+    /* Add any other styling properties you want */
+}

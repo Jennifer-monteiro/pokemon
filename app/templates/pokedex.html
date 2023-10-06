@@ -24,6 +24,17 @@
                     </div>
                     {{form.submit(class="btn btn-primary mt-3")}}
                 </form>
+                
+                <!-- Error message section -->
+                {% if error_message %}
+                <!-- Error message section with background color -->
+                <div class="error-section funny-background">
+                    <div class="alert alert-danger">
+                        {{ error_message }}
+                    </div>
+                </div>
+                {% endif %}
+                
                 {% if poke_info %}
                 <div class="card mt-4">
                     <div class="card-body">
