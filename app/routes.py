@@ -3,7 +3,7 @@ import requests
 from app import app
 from .forms import PokeForm
 from .forms import SignUpForm
-from .models import User
+from .models import db, User
 
 @app.route("/")
 def index_html():
@@ -39,10 +39,8 @@ def get_pokemon_info():
     
     return render_template('Pokedex.html', form=form, error_message=error_message)
 
-# Define a simple user dictionary for demonstration purposes
-users = {'user1': 'password1', 'user2': 'password2'}
 
-@app.route('/login', methods=['GET', 'POST'])
+""" @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
@@ -54,7 +52,7 @@ def login():
         else:
             return "Login Failed. Please check your credentials."
 
-    return render_template('login.html')
+    return render_template('login.html') """
 
 @app.route("/login")
 def login_page():
@@ -68,6 +66,13 @@ def signup_page():
             username =form.username.data
             email =form.email.data
             password =form.password.data
-
+            
             user = User(username, email, password)
-    return render_template('signup.html', title='Sign Up', form=form)
+
+            db.session.add(user)
+            db.session.commit()
+        else:
+            print("FORM INVALID!")
+            print(form.errors)
+
+    return render_template('signup.html', form=form)

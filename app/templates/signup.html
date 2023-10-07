@@ -16,6 +16,9 @@
     {{ form.password.label(class='form-label') }}
     {{ form.password(class='form-control',placeholder="Password") }}
 
+    {{ form.confirm_password.label(class='form-label') }}
+    {{ form.confirm_password(class='form-control',placeholder="Confirm Password") }}
+
     <div class="d-grid gap-2 my-3">
         {{ form.submit(class='btn btn-primary btn-block') }}
     </div>
