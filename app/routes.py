@@ -1,7 +1,9 @@
-from flask import request, render_template
+from flask import request, render_template, redirect
 import requests
 from app import app
 from .forms import PokeForm
+from .forms import SignUpForm
+from .models import User
 
 @app.route("/")
 def index_html():
@@ -58,6 +60,14 @@ def login():
 def login_page():
     return render_template('login.html', title='Login')
 
-@app.route("/signup")
+@app.route("/signup", methods=['GET', 'POST'])
 def signup_page():
-    return render_template('signup.html', title='Sign Up')
+    form = SignUpForm()
+    if request.method == 'POST':
+        if form.validate():
+            username =form.username.data
+            email =form.email.data
+            password =form.password.data
+
+            user = User(username, email, password)
+    return render_template('signup.html', title='Sign Up', form=form)

@@ -1,16 +1,14 @@
 from flask import Flask
 from config import Config
+from .models import db
+from flask_migrate import Migrate
 	
 app = Flask(__name__)
 app.config.from_object(Config)
 
+db.init_app(app)
+migrate = Migrate(app,db)
+
+
 from . import routes
 app.static_folder = 'static'
-
-from wtforms import Form, BooleanField, StringField, PasswordField, validators
-
-""" class SignUp(Form):
-    username= StringField('Username', [validators.Length(min=4,max=25)])
-    username= StringField('Username',[validators.Length(min=6,max=35)])
-    email=PasswordField("New Password",
- """
