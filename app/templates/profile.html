@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <!-- Left-side menu -->
+            <div class="list-group">
+                <a href="#change-username" class="list-group-item list-group-item-action">Change Username</a>
+                <a href="#change-email" class="list-group-item list-group-item-action">Change Email</a>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                <div class="alert alert-dismissible alert-{{ messages[0][1] }}">
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                  {{ messages[0][0] }}
+                </div>
+              {% endif %}
+            {% endwith %}
+            
+            <!-- Content area for editing profile -->
+            <div id="change-username" class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Change Username</h5>
+                    <form method="POST" action="{{ url_for('update_username') }}">
+                        {{ form.csrf_token }}
+                        <div class="form-group">
+                            <label for="new_username">New Username</label>
+                            <input type="text" class="form-control" id="new_username" name="new_username" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Username</button>
+                    </form>
+                </div>
+            </div>
+            <div id="change-email" class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">Change Email</h5>
+                    <form method="POST" action="{{ url_for('update_email') }}">
+                        {{ form.csrf_token }}
+                        <div class="form-group">
+                            <label for="new_email">New Email</label>
+                            <input type="email" class="form-control" id="new_email" name="new_email" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Email</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

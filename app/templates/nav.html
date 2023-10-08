@@ -9,6 +9,18 @@
 
     <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
         <ul class="navbar-nav mr-auto">
+            {% if current_user.is_authenticated %}
+            <!-- If the user is authenticated (logged in) -->
+            <li class="nav-item active">
+                <a class="nav-link text-white" href="{{ url_for('profile') }}">Profile</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link text-white" href="{{ url_for('profile') }}">Catch Pokémon</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link text-white" href="{{ url_for('profile') }}">Battle</a>
+            </li>
+            {% endif %}
             <li class="nav-item active">
                 <a class="nav-link text-white" href="/">Home</a>
             </li>
@@ -16,19 +28,15 @@
                 <a class="nav-link text-white" href="/pokedex">Pokedex</a>
             </li>
         </ul>
-        <form class="form-inline my-2 my-lg-0 mx-auto">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="border-color: white; color: white;">Search</button>
-        </form>
-        
-        <div class="ml-auto"> <!-- Move login/signup buttons to the right -->
-            {% if current_user.is_authenticated %}
-                <p class="text-white mx-2">Hi, {{ current_user.username }}</p>
-                <a href="/logout" class="btn btn-primary mx-2">Logout</a>
-            {% else %}
-                <a href="/login" class="btn btn-primary mx-2">Login</a>
-                <a href="/signup" class="btn btn-success">Sign Up</a>
-            {% endif %}
-        </div>
+    </div>
+
+    <div class="ml-auto"> <!-- Move login/signup buttons to the right -->
+        {% if current_user.is_authenticated %}
+            <p class="text-white mx-2">Hi, {{ current_user.username }}</p>
+            <a href="/logout" class="btn btn-primary mx-2">Logout</a>
+        {% else %}
+            <a href="/login" class="btn btn-primary mx-2">Login</a>
+            <a href="/signup" class="btn btn-success">Sign Up</a>
+        {% endif %}
     </div>
 </nav>

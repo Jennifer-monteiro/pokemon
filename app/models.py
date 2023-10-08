@@ -1,21 +1,36 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from flask_login import UserMixin
-
 db = SQLAlchemy()
 
+teams= db.Table('teams',
+                db.Column('user_id',db.Integer,db.ForeignKey('user.id'),nullable=False),
+                db.Column('pokemon_id',db.Integer,db.ForeignKey('pokemoncapture.id'),nullable=False)
+                )
 class User(db.Model, UserMixin):
-    id = db.Column(db.Integer,primary_key=True)
-    username = db.Column(db.String(45),nullable=False,unique=True)
-    email = db.Column(db.String(100),nullable=False,unique=True)
+    id = db.Column(db.Integer, primary_key=True)
+    fullname = db.Column(db.String, nullable=False)
+    username = db.Column(db.String(45), nullable=False, unique=True)
+    email = db.Column(db.String(100), nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
-    date_created = db.Column(db.DateTime, nullable=False,default=datetime.utcnow())
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
+    
+    # Define the relationship with PokemonCapture, and set a unique backref name
+    captured_pokemon = db.relationship('PokemonCapture', backref='teams',secondary=teams,primaryjoin=(teams.c.user_id==id))
 
-    def __init__(self,username,email,password):
+    def __init__(self, fullname, username, email, password):
+        self.fullname = fullname
         self.username = username
         self.email = email
         self.password = password
 
+class PokemonCapture(db.Model):
+    __tablename__='pokemoncapture'
+    id = db.Column(db.Integer, primary_key=True)
+    pokemon_name = db.Column(db.String(255), nullable=False)
+    date_captured = db.Column(db.DateTime, default=datetime.utcnow)
 
-class Post():
-    pass
+
+    def __repr__(self):
+        return f"PokemonCapture, pokemon_name={self.pokemon_name}, date_captured={self.date_captured})"
+

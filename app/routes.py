@@ -1,10 +1,10 @@
-from app import app
+from app import app,db
 import requests
-from flask import redirect, render_template, request, url_for
+from flask import redirect, render_template, request, url_for, flash
 from .forms import PokeForm
 from .forms import SignUpForm
-from .models import db, User
-from .forms import LoginForm
+from .models import User, PokemonCapture
+from .forms import LoginForm, ProfileForm
 from flask_login import login_user, logout_user, current_user, login_required
 
 
@@ -45,51 +45,142 @@ def get_pokemon_info():
     return render_template('Pokedex.html', form=form, error_message=error_message)
 
 
-
 @app.route("/signup", methods=['GET', 'POST'])
 def signup_page():
     form = SignUpForm()
     if request.method == 'POST':
         if form.validate():
-            username =form.username.data
-            email =form.email.data
-            password =form.password.data
+            fullname = form.fullname.data
+            username = form.username.data
+            email = form.email.data
+            password = form.password.data
 
-            user = User(username, email, password)
+            # Check if the email already exists in the database
+            existing_email_user = User.query.filter_by(email=email).first()
+            existing_username_user = User.query.filter_by(username=username).first()
 
-            db.session.add(user)
-            db.session.commit()
+            if existing_email_user:
+                flash("Email already exists. Please choose another one.", "error")
+            elif existing_username_user:
+                flash("Username already exists. Please choose another one.", "error")
+            else:
+                user = User(
+                    fullname=fullname,
+                    username=username,
+                    email=email,
+                    password=password
+                )
+
+                db.session.add(user)
+                db.session.commit()
+                flash("Sign up successful!", "success")
+                return redirect(url_for("login_page"))
         else:
-            print("FORM INVALID!")
-            print(form.errors)
+            flash("Form is invalid. Please check the fields.", "error")
 
     return render_template('signup.html', form=form)
 
+""" @app.route("/user")
+def user_page():
+    return render_template('user.html', title='User Page') """
 
 @app.route("/login", methods=['GET', 'POST'])
 def login_page():
     form = LoginForm()
+    error_message = None  # Initialize error message
+
     if request.method == 'POST':
         if form.validate():
-            username =form.username.data
-            password =form.password.data
-
-            #look database for use with the username
-             #if match log in
+            username = form.username.data
+            password = form.password.data
 
             user = User.query.filter_by(username=username).first()
             if user:
                 if user.password == password:
                     login_user(user)
+                    return redirect(url_for('user_page'))
                 else:
-                    print('User doesnt exist')
-                
+                    error_message = 'Incorrect password'
             else:
-                print("FORM INVALID!")
-        return redirect(url_for('index_html'))
-    return render_template('login.html', title='Login', form=form)
+                error_message = 'User does not exist'
+        else:
+            error_message = 'Invalid form data'
+
+    return render_template('login.html', title='Login', form=form, error_message=error_message)
 
 @app.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('login_page'))
+
+@app.route('/profile')
+def profile():
+    form = ProfileForm()
+    return render_template('profile.html', title='Profile Page', form=ProfileForm())
+
+
+@app.route('/edit_profile', methods=['GET', 'POST'])
+@login_required  # Make sure the user is logged in to access this page
+def edit_profile():
+    return render_template('profile.html')
+
+@app.route('/update_username', methods=['POST'])
+@login_required
+def update_username():
+    new_username = request.form.get('new_username')
+    if new_username:
+        current_user.username = new_username
+        db.session.commit()
+        flash('Username updated successfully', 'success')
+    else:
+        flash('Please provide a valid username', 'danger')
+    return redirect(url_for('profile'))
+
+@app.route('/update_email', methods=['POST'])
+@login_required
+def update_email():
+    new_email = request.form.get('new_email')
+    if new_email:
+        current_user.email = new_email
+        db.session.commit()
+        flash('Email updated successfully', 'success')
+    else:
+        flash('Please provide a valid email address', 'danger')
+    return redirect(url_for('profile'))
+
+import random
+
+@app.route('/catch_pokemon', methods=['POST'])
+def catch_pokemon():
+    if current_user.is_authenticated:
+        # Check if the user has already caught 5 Pokémon
+        if PokemonCapture.query.filter_by(user_id=current_user.id).count() >= 5:
+            flash("You have already caught 5 Pokémon. You cannot catch more.")
+        else:
+            random_pokemon_id = random.randint(1, 1000)  # Adjust the range based on your preference
+            response = requests.get(f'https://pokeapi.co/api/v2/pokemon/{random_pokemon_id}')
+            
+            if response.status_code == 200:
+                data = response.json()
+                pokemon_name = data['forms'][0]['name']  # Get the name of the captured Pokémon
+                # Create a new PokemonCapture instance for the user
+                new_pokemon_capture = PokemonCapture(
+                    pokemon_name=pokemon_name,
+                    user_id=current_user.id
+                )
+                db.session.add(new_pokemon_capture)
+                db.session.commit()
+                flash(f"You caught a {pokemon_name}!")
+            else:
+                flash("Failed to catch a Pokémon. Try again.")
+    else:
+        flash("You must be logged in to catch Pokémon.")
+    return redirect(url_for('get_pokemon_info'))  # Redirect back to the Pokedex page
+
+
+@app.route('/user')
+@login_required  # Ensure the user is logged in to access this page
+def user_page():
+    # Query the database for the Pokémon captured by the current user
+    caught_pokemon = PokemonCapture.query.filter_by(user_id=current_user.id).all()
+    return render_template('user_page.html', caught_pokemon=caught_pokemon)

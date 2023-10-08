@@ -6,7 +6,11 @@
 <div class="container col-4 border mt-5">
     <h1>Sign Up</h1>
     <form method="POST">
-        {{form.hidden_tag()}}
+    {{form.hidden_tag()}}
+    
+    {{ form.fullname.label(class='form-label') }}
+    {{ form.fullname(class='form-control', placeholder="Full Name") }}
+    
     {{ form.username.label(class='form-label') }}
     {{ form.username(class='form-control',placeholder="Username") }}
 
@@ -24,5 +28,16 @@
     </div>
 
     </form>
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flash">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </div>
 </div>
 {% endblock %}

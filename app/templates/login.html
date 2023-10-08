@@ -1,17 +1,24 @@
-{% extends 'base.html' %} {% block title %}Log in{% endblock %} {% block content
-%}
+{% extends 'base.html' %} {% block title %}Log in{% endblock %} 
+
+{% block content %}
 <div class="container col-4 border mt-5">
   <h1>Log in</h1>
   <form method="POST">
-    {{form.hidden_tag()}} 
-    {{ form.username.label(class='form-label') }} 
-    {{form.username(class='form-control',placeholder="Username") }} 
-    {{form.password.label(class='form-label') }} 
-    {{form.password(class='form-control',placeholder="Password") }}
+    {{ form.hidden_tag() }}
+    {{ form.username.label(class='form-label') }}
+    {{ form.username(class='form-control', placeholder="Username") }}
+    {{ form.password.label(class='form-label') }}
+    {{ form.password(class='form-control', placeholder="Password") }}
 
     <div class="d-grid gap-2 my-3">
       {{ form.submit(class='btn btn-primary btn-block') }}
     </div>
+
+    {% if error_message %}
+    <div class="alert alert-danger mt-3">
+      {{ error_message }}
+    </div>
+    {% endif %}
   </form>
 </div>
 {% endblock %}
