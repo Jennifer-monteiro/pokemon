@@ -3,7 +3,7 @@ import requests
 from flask import redirect, render_template, request, url_for, flash
 from .forms import PokeForm
 from .forms import SignUpForm
-from .models import User, PokemonCapture
+from .models import User, PokemonCapture, BattleResult
 from .forms import LoginForm, ProfileForm
 from flask_login import login_user, logout_user, current_user, login_required
 from datetime import datetime
@@ -197,6 +197,7 @@ def catch_pokemon():
 
 
 
+
 @app.route('/user_page', methods=['GET', 'POST'])
 @login_required
 def user_page():
@@ -261,3 +262,40 @@ def fetch_pokemon_data(pokemon_name):
         return response.json()
 
     return None
+
+import random
+
+@app.route('/battle', methods=['GET', 'POST'])
+def battle_result():
+    if request.method == 'POST':
+        # Get the opponent's username from the button click
+        opponent_username = request.form['opponent_username']
+
+        # Retrieve the logged-in user and opponent's Pokemon from the database
+        user = User.query.filter_by(username=current_user.username).first()
+        opponent = User.query.filter_by(username=opponent_username).first()
+
+        # Select a random Pokemon for the user and opponent
+        user_pokemon = random.choice(user.captured_pokemon)
+        opponent_pokemon = random.choice(opponent.captured_pokemon)
+
+        # Perform the battle logic to determine the winner
+        winner_user = BattleResult(user_pokemon, opponent_pokemon)
+
+        # Update user and opponent's wins/losses based on the battle result
+        if winner_user == user:
+            user.wins += 1
+            opponent.losses += 1
+        else:
+            user.losses += 1
+            opponent.wins += 1
+
+        # Commit the changes to the database
+        db.session.commit()
+
+        # Render the battle results page with winner and Pokemon information
+        return render_template('battle_results.html', winner_user=winner_user, user=user, opponent=opponent, user_pokemon=user_pokemon, opponent_pokemon=opponent_pokemon)
+
+    # For GET request, show the list of users for the logged-in user to choose an opponent
+    users = User.query.filter(User.username != current_user.username).all()
+    return render_template('battle.html', users=users)

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Battle Results</h1>
+
+    <section class="battle-result">
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Your Pokémon</h2>
+                {% for pokemon_info in user_pokemon %}
+                    <div class="pokemon">
+                        <img src="{{ pokemon_info['sprite_url'] }}" alt="{{ pokemon_info['name'] }}" class="pokemon-image">
+                        <p>{{ pokemon_info['name'] }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="col-md-6">
+                <h2>Opponent's Pokémon</h2>
+                {% for pokemon_info in opponent_pokemon %}
+                    <div class="pokemon">
+                        <img src="{{ pokemon_info['sprite_url'] }}" alt="{{ pokemon_info['name'] }}" class="pokemon-image">
+                        <p>{{ pokemon_info['name'] }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h3>Winner: {{ winner.username }}</h3>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

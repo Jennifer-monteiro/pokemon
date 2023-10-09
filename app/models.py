@@ -54,3 +54,8 @@ class PokemonCapture(db.Model):
 
     def __repr__(self):
         return f"PokemonCapture, pokemon_name={self.pokemon_name}, date_captured={self.date_captured})"
+
+class BattleResult(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    winner_id = db.Column(db.Integer, nullable=False)
+    loser_id = db.Column(db.Integer, nullable=False)
