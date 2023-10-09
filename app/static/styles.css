@@ -1,37 +1,53 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans|Open+Sans+Condensed:300,700');
+
 body {
-    background-color: white;
-    overflow: hidden;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; 
-    background-image: url("/static/poke_back.png"); 
-    background-size: 100% auto; 
-    background-repeat: no-repeat;
-    background-position: center; 
-    background-attachment: fixed;
-    
+  font-family: "Open Sans", Helvetica, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  background-image: url("/static/poke_back.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
 }
 
-.welcome {
-    color: white;
-    font-family: 'Your Cool Font', sans-serif; /* Replace with your preferred font */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Add shadows (adjust values as needed) */
-    text-align: center;
-    padding: 20px;
-    position: absolute;
-    top: 25%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 10px;
+img {
+  max-height: 150px;
+  margin: auto;
+  display: inline-block;
 }
 
-.welcome h1 {
-    font-size: 3.5em; /* Increase font size for the heading */
-    margin-bottom: 10px; /* Add some spacing below the heading */
+
+
+.card {
+  display: inline-block;
+  width: 300px;
+  padding: 1em;
+  border-radius: 15px;
+  margin: 10px;
+  background: #ddd;
+  text-align: left;
 }
 
-.welcome p {
-    font-size: 1.5em; /* Increase font size for the paragraph */
+.card__caption {
+  background-color: rgba(255, 255, 255, 0.65);
+  padding: 1em;
+  position: relative;
+  border-radius: 0 0 3px 3;
 }
+
+/* .welcome-container, h1{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* This ensures that the content takes the full height of the viewport 
+  text-align: center;
+  color: white; 
+  font-size: 60px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); 
+  margin-top: -20px;
+}
+ */
+

@@ -18,7 +18,7 @@ def get_pokemon_info():
     form = PokeForm()
     error_message = None
     
-    if request.method == 'POST':
+    if request.method == 'POST' and form.validate_on_submit():  # Validate the form on submit
         poke_name = form.pokemon.data.lower()
         response = requests.get(f'https://pokeapi.co/api/v2/pokemon/{poke_name}')
         
@@ -44,6 +44,7 @@ def get_pokemon_info():
             error_message = "The Pokémon you entered was not found. Please check the name or number and try again."
     
     return render_template('Pokedex.html', form=form, error_message=error_message)
+
 
 
 @app.route("/signup", methods=['GET', 'POST'])

@@ -1,37 +1,44 @@
-body{
+body {
     background-color: white;
     overflow: hidden;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; 
-    background-image: url("/static/poke_back.png");
+    background-image: url("/static/pokedex_background.jpg");
     background-size: 100% auto;
-   background-repeat: no-repeat; 
+    background-repeat: no-repeat;
     background-position: center;
     background-attachment: fixed;
     min-height: 100vh;
 }
- */
+
 .container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #fffefe; /* Set a background color */
+    background-color: transparent; /* Transparent background */
 }
 
-/* Custom styling for the input form */
 .input-container {
-    max-width: 400px;
+    max-width: 200px; /* Adjust the maximum width as needed */
     margin: 0 auto;
-    padding: 20px;
+    padding: 100px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: #f8f8f8;
+    background-color: transparent; /* Transparent background */
 }
 
+.form-control {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    padding: 12px; /* Increased padding */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 6px 12px;
+    font-size: 12px; /* Adjust the font size as needed */
+}
 .form-label {
     font-weight: bold;
 }
@@ -42,6 +49,9 @@ body{
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    font-size: 14px;
+    padding: 4px 8px; /* Adjust the padding */
+    color: white;
 }
 
 .btn-primary {
@@ -57,87 +67,14 @@ body{
     background-color: #0056b3;
 }
 
-.card {
-    max-width:300px;
-    width: 100%;
-    border: none;
-    border-radius: 15px;
-    box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.5);
+h1 {
+    color: white; /* Set the text color to white for h1 */
+    font-size: 70px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Add a text shadow */
 }
 
-.attribute-block {
-    background-color: #f8f8f8;
-    border-radius: 15px;
-    padding: 20px;
-    margin-right: 10px;
-    font-family: 'PokemonFont', sans-serif; /* Use PokemonFont for the attribute text */
-}
-
-.attribute-block p {
-    margin-bottom: 8px; /* Add some vertical spacing between attributes */
-    display: flex; /* Use flexbox to align label and value */
-    justify-content: space-between; /* Space evenly between label and value */
-}
-
-.attribute-block strong {
-    font-weight: bold;
-    color: #007bff; /* Set the desired label color */
-}
-
-.attribute-block span {
-    color: #333; /* Set the desired value color */
-}
-
-.image-block {
-
-        background-color: #f8f8f8;
-        border-radius: 15px;
-        padding: 20px;
-        margin-left: 10px;
-        text-align: center; /* Add this line to center the content horizontally */
-    }
-    
-
-.card-img {
-        max-width: 100%; /* Ensure the image doesn't overflow the block */
-        max-height: 180px; /* Adjust the image height as needed */
-        margin: 0 auto; /* Center the image horizontally */
-        display: block; /* Remove any default inline behavior */
-    }
-
-.card-title {
-    text-align: center;
-   
-
-}
-
-.card-title {
-    text-align: center;
-    font-family: 'PokemonFont', sans-serif;
-    font-size: 24px; /* Adjust the font size as needed */
-    color: #ff9900; /* Set the desired text color */
-}
-
-/* Error background color */
-.error-section {
-    background-color: #ffcccc; /* Set your desired error background color */
-    padding: 20px;
-    border-radius: 5px;
-    margin-top: 20px;
-}
-
-/* Style the error message */
-.alert.alert-danger {
-    font-weight: bold;
-    color: #721c24; /* Text color for error message */
-    border-color: #f5c6cb; /* Border color for error message */
-}
-
-.funny-background {
-    /* Set your background image URL here */
-    background-image: url('/static/pikachu.png');
-    /* Set background size, repeat, and other properties as needed */
-    background-size: cover;
-    background-repeat: no-repeat;
-    /* Add any other styling properties you want */
+label[for="pokemon"] {
+    color: white;
+    font-size: 30px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Add a text shadow */
 }
