@@ -62,3 +62,91 @@ img {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); /* Add a text shadow */
   margin-top: -150px; /* Adjust as needed */
 }
+
+
+/* Styles for the Catch Pokémon Page */
+
+/* Style for the catch container */
+.catch-container {
+  background-color: transparent; /* Transparent background */
+  text-align: center; /* Center-align text */
+  margin: 0 auto; /* Center-align the container horizontally */
+  max-width: 400px; /* Maximum width of the container */
+  padding: 20px; /* Add padding for spacing */
+  display: flex; /* Use flexbox for vertical centering */
+  flex-direction: column; /* Stack elements vertically */
+  justify-content: center; /* Vertically center the content */
+  align-items: center; /* Horizontally center the content */
+  min-height: 100vh; /* Ensure full viewport height */
+}
+
+/* Style for the catch message */
+.catch-message {
+  color: white; /* Text color is now white */
+  font-size: 18px; /* Font size */
+}
+
+/* Styles for the Pokémon info container */
+.pokemon-info-container {
+  background-color: transparent; /* Transparent background */
+  text-align: center; /* Center-align text */
+  margin-top: 20px; /* Add margin to separate from catch message */
+}
+
+/* Styles for the Pokémon name */
+.pokemon-name {
+  color: white; /* Pokémon name text color */
+  font-size: 24px; /* Font size */
+  font-weight: bold; /* Bold text */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Text shadow */
+}
+
+/* Styles for the Pokémon image */
+.pokemon-image {
+  max-width: 300px; /* Increased maximum image width */
+  margin: 20px auto; /* Center-align the image */
+  display: block; /* Display as block element */
+}
+
+/* Styles for the max Pokémon reached alert */
+.max-pokemon-reached {
+  background-color: transparent; /* Transparent background */
+  color: white; /* Alert text color is now white */
+  font-size: 18px; /* Font size */
+  text-align: center; /* Center-align text */
+  margin-top: 20px; /* Add margin to separate from Pokémon info */
+}
+
+/* Styles for the success message */
+.success-message {
+  background-color: transparent; /* Transparent background */
+  color: white; /* Success message text color is now white */
+  font-size: 18px; /* Font size */
+  text-align: center; /* Center-align text */
+  margin-top: 20px; /* Add margin to separate from Pokémon info */
+}
+
+/* Styles for the catch and skip buttons */
+.catch-button, .skip-button {
+  background-color: #007bff; /* Button background color */
+  color: white; /* Button text color is now white */
+  border: none; /* Remove button border */
+  border-radius: 5px; /* Button border radius */
+  padding: 10px 20px; /* Button padding */
+  cursor: pointer; /* Cursor style on hover */
+  display: block; /* Display as block element */
+  margin: 10px auto; /* Center-align buttons */
+  font-size: 16px; /* Font size */
+}
+
+/* Hover styles for buttons */
+.catch-button:hover, .skip-button:hover {
+  background-color: #0056b3; /* Button background color on hover */
+}
+
+.poke_collection,h1{
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Add a text shadow */
+  margin-top:20px;
+  font-size: 50px;
+}

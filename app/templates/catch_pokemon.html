@@ -1,37 +1,35 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <p>{{ flash }}</p>  <!-- Display flash messages (e.g., "You caught a [Pokémon name]!" or error messages). -->
+    <p class="catch-message">{{ flash }}</p>
     
     {% if pokemon_info %}
-        <h2>You caught a Pokémon!</h2>
-        <p>Name: {{ pokemon_info.name }}</p> <!-- Display the Pokémon's name. -->
-        <img src="{{ pokemon_info.sprite_frontdefault }}" alt="Pokémon Image"> <!-- Display the Pokémon's sprite. -->
+        <div class="pokemon-info-container">
+            <p class="pokemon-name">Name: {{ pokemon_info.name }}</p>
+            <img src="{{ pokemon_info.sprite_frontdefault }}" alt="Pokémon Image" class="pokemon-image">
+        </div>
     {% endif %}
     
     {% if max_pokemon_reached %}
-        <div class="alert alert-danger">
+        <div class="alert alert-danger max-pokemon-reached">
             You have reached the maximum of 5 Pokémon. You need to release one if you want to catch another.
         </div>
     {% endif %}
     
     {% if success_message %}
-        <div class="alert alert-success">
+        <div class="alert alert-success success-message">
             {{ success_message }}
         </div>
     {% endif %}
     
     <form method="POST" action="/catch_pokemon">
         <input type="hidden" name="action" value="catch">
-        <button type="submit">Catch</button>
+        <button type="submit" class="catch-button">Catch</button>
     </form>
     
     <form method="POST" action="/catch_pokemon">
         <input type="hidden" name="action" value="skip">
-        <button type="submit">Skip</button>
+        <button type="submit" class="skip-button">Skip</button>
     </form>
-    
-    <a href="/user_page">Go to Your Pokémon Collection</a>
+</div>
 {% endblock %}
-</body>
-</html>

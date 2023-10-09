@@ -1,19 +1,53 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Your Pokémon Collection</h1>
-    <ul class="list-group">
+    <h1 class= "poke_collection">Your Pokémon Collection</h1>
+    <div class="card-container">
         {% for pokemon in captured_pokemon %}
-            <li class="list-group-item">
-                {{ pokemon.pokemon_name }}
-                <form method="POST" action="/user_page" class="float-right">
-                    <input type="hidden" name="action" value="delete">
-                    <input type="hidden" name="pokemon_name" value="{{ pokemon.pokemon_name }}">
-                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                </form>
-            </li>
+            <div class="card">
+                <div class="card__image-container">
+                    <img src="{{ pokemon.sprite_frontdefault }}" alt="{{ pokemon.pokemon_name }}" class="card__image">
+                </div>
+                <div class="card__caption">
+                    <span class="card__type card__type--{{ pokemon.type }}">{{ pokemon.type }}</span>
+                    <h2 class="card__name">{{ pokemon.pokemon_name }}</h2>
+                    <div class="card__abilities">
+                        <div class="card__ability">
+                            <span class="card__label">Ability 1:</span>
+                            {{ pokemon.ability1_name }}
+                        </div>
+                        <div class="card__ability">
+                            <span class="card__label">Ability 2:</span>
+                            {{ pokemon.ability2_name }}
+                        </div>
+                    </div>
+                    <table class="card__stats">
+                        <tr>
+                            <th>Base Experience:</th>
+                            <td>{{ pokemon.base_experience }}</td>
+                        </tr>
+                        <tr>
+                            <th>Attack Stat:</th>
+                            <td>{{ pokemon.attack_stat }}</td>
+                        </tr>
+                        <tr>
+                            <th>HP Stat:</th>
+                            <td>{{ pokemon.hp_stat }}</td>
+                        </tr>
+                        <tr>
+                            <th>Defense Stat:</th>
+                            <td>{{ pokemon.defense_stat }}</td>
+                        </tr>
+                    </table>
+                    <form method="POST" action="/user_page">
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="pokemon_name" value="{{ pokemon.pokemon_name }}">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </div>
+            </div>
         {% endfor %}
-    </ul>
+    </div>
     <a href="/" class="btn btn-primary mt-3">Back to Home</a>
 {% endblock %}
 

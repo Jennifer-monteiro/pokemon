@@ -1,39 +1,46 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Battle Page</h1>
-    <table class="table">
+    <h1>Battle Pokémon</h1>
+    
+    <table class="table table-bordered">
         <thead>
             <tr>
-                <th>User</th>
-                <th>Pokémon Captured</th>
-                <th>Action</th>
+                <th>Username</th>
+                <th>Pokémon Name</th>
+                <th>Type</th>
+                <th>Ability 1</th>
+                <th>Ability 2</th>
+                <th>Base Experience</th>
+                <th>Attack Stat</th>
+                <th>HP Stat</th>
+                <th>Defense Stat</th>
+                <th>Battle</th>
             </tr>
         </thead>
         <tbody>
-            {% for user in users %}
-                {% if user != current_user %}
+            {% for user_data in user_pokemon_data %}
+                {% for pokemon_data in user_data['pokemon'] %}
                     <tr>
-                        <td>{{ user.username }}</td>
+                        <td>{{ user_data['username'] }}</td>
+                        <td>{{ pokemon_data['name'] }}</td>
+                        <td>{{ pokemon_data['type'] }}</td>
+                        <td>{{ pokemon_data['ability1_name'] }}</td>
+                        <td>{{ pokemon_data['ability2_name'] }}</td>
+                        <td>{{ pokemon_data['base_experience'] }}</td>
+                        <td>{{ pokemon_data['attack_stat'] }}</td>
+                        <td>{{ pokemon_data['hp_stat'] }}</td>
+                        <td>{{ pokemon_data['defense_stat'] }}</td>
                         <td>
-                            <ul>
-                                {% for pokemon in user.captured_pokemon %}
-                                    <li>
-                                        <img src="{{ pokemon.user.pokemon_name }}" alt="{{ pokemon.pokemon_name }} Image">
-                                        {{ pokemon.pokemon_name }}
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </td>
-                        <td>
-                            <form method="POST" action="{{ url_for('battle', user_id=user.id) }}">
-                                <button type="submit" class="btn btn-primary">Battle All</button>
+                            <form method="POST" action="/battle">
+                                <input type="hidden" name="pokemon_id" value="{{ pokemon_data['id'] }}">
+                                <button type="submit" class="btn btn-primary">Battle</button>
                             </form>
                         </td>
                     </tr>
-                {% endif %}
+                {% endfor %}
             {% endfor %}
         </tbody>
     </table>
-    <a href="{{ url_for('user_page') }}" class="btn btn-secondary">Go back to User Page</a>
 {% endblock %}
+
