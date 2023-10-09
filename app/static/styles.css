@@ -37,17 +37,28 @@ img {
   border-radius: 0 0 3px 3;
 }
 
-/* .welcome-container, h1{
+.welcome-container{
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* This ensures that the content takes the full height of the viewport 
+  height: 100vh;
   text-align: center;
-  color: white; 
-  font-size: 60px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); 
-  margin-top: -20px;
+  color: white;
+  font-size: 70px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  margin-top: -150px; /* Adjust as needed */
 }
- */
 
+.special-heading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  color: white;
+  font-size: 70px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); /* Add a text shadow */
+  margin-top: -150px; /* Adjust as needed */
+}

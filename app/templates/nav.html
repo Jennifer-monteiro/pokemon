@@ -9,9 +9,12 @@
 
     <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
         <ul class="navbar-nav mr-auto">
+            {% if not current_user.is_authenticated %}
+            <!-- If the user is not authenticated (not logged in) -->
             <li class="nav-item active">
                 <a class="nav-link text-white" href="/">Home</a>
             </li>
+            {% endif %}
             <li class="nav-item active">
                 <a class="nav-link text-white" href="/pokedex">Pokedex</a>
             </li>
