@@ -220,11 +220,9 @@ def user_page():
 
 
 
-# Define the route for the battle page
-@app.route('/battle')
+@app.route('/battle', methods=['GET'])
+@login_required
 def battle():
-    # Query both users and their captured Pokémon from the database
-    users = User.query.all()
-
-    # Pass the users and their Pokémon to the battle template
+    # Get all users except the current user
+    users = User.query.filter(User.id != current_user.id).all()
     return render_template('battle.html', users=users)
