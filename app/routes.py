@@ -150,14 +150,14 @@ def update_email():
 def catch_pokemon():
     action = request.form.get('action')
     pokemon_info = None
-    max_pokemon_reached = False  # Initialize the variable to check if max Pokémon are reached
+    max_pokemon_reached = False  # Initialize max_pokemon_reached to False
     
     if action == 'catch':
         if current_user.is_authenticated:
             # Check if the user has already caught 5 Pokémon
             if PokemonCapture.query.filter_by(user_id=current_user.id).count() >= 5:
-                flash("Your Pokédex is full! You cannot catch more Pokémon.")
-                max_pokemon_reached = True  # Set the flag to True when max Pokémon are reached
+                max_pokemon_reached = True  # Set max_pokemon_reached to True
+                flash("Your Pokédex is full! You cannot catch more Pokémon.", 'error')
             else:
                 random_pokemon_id = random.randint(1, 1000)  # Adjust the range based on your preference
                 response = requests.get(f'https://pokeapi.co/api/v2/pokemon/{random_pokemon_id}')
@@ -172,15 +172,15 @@ def catch_pokemon():
                     )
                     db.session.add(new_pokemon_capture)
                     db.session.commit()
-                    flash(f"You caught a {pokemon_name}!")
+                    flash(f"You caught a {pokemon_name}!", 'success')  # Set a success flash message
                     pokemon_info = {
                         'name': pokemon_name,
                         'sprite_frontdefault': data['sprites']['other']['official-artwork']['front_default']
                     }
                 else:
-                    flash("Failed to catch a Pokémon. Try again.")
+                    flash("Failed to catch a Pokémon. Try again.", 'error')
         else:
-            flash("You must be logged in to catch Pokémon.")
+            flash("You must be logged in to catch Pokémon.", 'error')
     
     # Generate a random Pokémon if it's not a "Catch" action or after a successful capture
     if action == 'skip' or pokemon_info is None:
@@ -194,6 +194,9 @@ def catch_pokemon():
             }
     
     return render_template('catch_pokemon.html', pokemon_info=pokemon_info, max_pokemon_reached=max_pokemon_reached)
+
+
+
 
 
 
@@ -214,3 +217,14 @@ def user_page():
             return redirect(url_for('user_page'))
 
     return render_template('user_page.html', captured_pokemon=captured_pokemon)
+
+
+
+# Define the route for the battle page
+@app.route('/battle')
+def battle():
+    # Query both users and their captured Pokémon from the database
+    users = User.query.all()
+
+    # Pass the users and their Pokémon to the battle template
+    return render_template('battle.html', users=users)

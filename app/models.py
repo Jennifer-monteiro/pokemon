@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from flask_login import UserMixin
 db = SQLAlchemy()
+from sqlalchemy.orm import relationship
 
 teams= db.Table('teams',
                 db.Column('user_id',db.Integer,db.ForeignKey('user.id'),nullable=False),
@@ -14,6 +15,8 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(100), nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
+    captured_pokemon = relationship('PokemonCapture', back_populates='user')
+
     
     # Define the relationship with PokemonCapture, and set a unique backref name
     captured_pokemon = db.relationship('PokemonCapture', backref='teams', secondary=teams)
@@ -39,6 +42,7 @@ class PokemonCapture(db.Model):
     pokemon_name = db.Column(db.String(255), nullable=False)
     date_captured = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = relationship('User', back_populates='captured_pokemon')
 
     def __init__(self, pokemon_name, user_id):
         self.pokemon_name = pokemon_name

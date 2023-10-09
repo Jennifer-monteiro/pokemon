@@ -1,24 +1,30 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <p>{{ flash }}</p>  <!-- Display flash messages (e.g., "You caught a [Pokémon name]!"). -->
+    <p>{{ flash }}</p>  <!-- Display flash messages (e.g., "You caught a [Pokémon name]!" or error messages). -->
     
     {% if pokemon_info %}
         <h2>You caught a Pokémon!</h2>
         <p>Name: {{ pokemon_info.name }}</p> <!-- Display the Pokémon's name. -->
         <img src="{{ pokemon_info.sprite_frontdefault }}" alt="Pokémon Image"> <!-- Display the Pokémon's sprite. -->
-    {% else %}
-        <h2>No Pokémon to display.</h2>
     {% endif %}
     
     {% if max_pokemon_reached %}
-        <p>You have reached the maximum of 5 Pokémon. You need to release one if you want to catch another.</p>
-    {% else %}
-        <form method="POST" action="/catch_pokemon">
-            <input type="hidden" name="action" value="catch">
-            <button type="submit">Catch</button>
-        </form>
+        <div class="alert alert-danger">
+            You have reached the maximum of 5 Pokémon. You need to release one if you want to catch another.
+        </div>
     {% endif %}
+    
+    {% if success_message %}
+        <div class="alert alert-success">
+            {{ success_message }}
+        </div>
+    {% endif %}
+    
+    <form method="POST" action="/catch_pokemon">
+        <input type="hidden" name="action" value="catch">
+        <button type="submit">Catch</button>
+    </form>
     
     <form method="POST" action="/catch_pokemon">
         <input type="hidden" name="action" value="skip">
