@@ -3,30 +3,34 @@
 {% block title %}Sign Up{% endblock %}
 
 {% block content %}
-<div class="container col-4 border mt-5">
-    <h1>Sign Up</h1>
+<div class="container col-6 mt-5 p-4"style="background-color: white; border-radius: 15px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3)">
+    <h1 class="mb-4 text-center">Sign Up</h1>
     <form method="POST">
-    {{form.hidden_tag()}}
-    
-    {{ form.fullname.label(class='form-label') }}
-    {{ form.fullname(class='form-control', placeholder="Full Name") }}
-    
-    {{ form.username.label(class='form-label') }}
-    {{ form.username(class='form-control',placeholder="Username") }}
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            {{ form.fullname.label(class='form-label text-left') }}
+            {{ form.fullname(class='form-control', placeholder="Full Name") }}
+        </div>
+        <div class="mb-3">
+            {{ form.username.label(class='form-label text-left') }}
+            {{ form.username(class='form-control', placeholder="Username") }}
+        </div>
+        <div class="mb-3">
+            {{ form.email.label(class='form-label text-left') }}
+            {{ form.email(class='form-control', placeholder="Email") }}
+        </div>
+        <div class="mb-3">
+            {{ form.password.label(class='form-label text-left') }}
+            {{ form.password(class='form-control', placeholder="Password") }}
+        </div>
+        <div class="mb-3">
+            {{ form.confirm_password.label(class='form-label text-left') }}
+            {{ form.confirm_password(class='form-control', placeholder="Confirm Password") }}
+        </div>
 
-    {{ form.email.label(class='form-label') }}
-    {{ form.email(class='form-control',placeholder="Email") }}
-
-    {{ form.password.label(class='form-label') }}
-    {{ form.password(class='form-control',placeholder="Password") }}
-
-    {{ form.confirm_password.label(class='form-label') }}
-    {{ form.confirm_password(class='form-control',placeholder="Confirm Password") }}
-
-    <div class="d-grid gap-2 my-3">
-        {{ form.submit(class='btn btn-primary btn-block') }}
-    </div>
-
+        <div class="d-grid gap-2 my-3">
+            {{ form.submit(class='btn btn-primary btn-lg btn-block') }}
+        </div>
     </form>
     <div class="flash-messages">
         {% with messages = get_flashed_messages() %}

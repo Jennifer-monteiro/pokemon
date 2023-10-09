@@ -9,10 +9,19 @@
 
     <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
         <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link text-white" href="/">Home</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link text-white" href="/pokedex">Pokedex</a>
+            </li>
             {% if current_user.is_authenticated %}
             <!-- If the user is authenticated (logged in) -->
             <li class="nav-item active">
                 <a class="nav-link text-white" href="{{ url_for('profile') }}">Profile</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link text-white" href="{{ url_for('user_page') }}">My Pokemons</a>
             </li>
             <li class="nav-item active">
                 <a class="nav-link text-white" href="{{ url_for('catch_pokemon') }}">Catch Pokémon</a>
@@ -21,12 +30,6 @@
                 <a class="nav-link text-white" href="{{ url_for('battle') }}">Battle</a>
             </li>
             {% endif %}
-            <li class="nav-item active">
-                <a class="nav-link text-white" href="/">Home</a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link text-white" href="/pokedex">Pokedex</a>
-            </li>
         </ul>
     </div>
 
