@@ -2,45 +2,36 @@
 
 {% block content %}
     <h1>Battle Pokémon</h1>
-    
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Username</th>
-                <th>Pokémon Name</th>
-                <th>Type</th>
-                <th>Ability 1</th>
-                <th>Ability 2</th>
-                <th>Base Experience</th>
-                <th>Attack Stat</th>
-                <th>HP Stat</th>
-                <th>Defense Stat</th>
-                <th>Battle</th>
-            </tr>
-        </thead>
-        <tbody>
+
+    <main>
+        <section class="characters">
             {% for user_data in user_pokemon_data %}
-                {% for pokemon_data in user_data['pokemon'] %}
-                    <tr>
-                        <td>{{ user_data['username'] }}</td>
-                        <td>{{ pokemon_data['name'] }}</td>
-                        <td>{{ pokemon_data['type'] }}</td>
-                        <td>{{ pokemon_data['ability1_name'] }}</td>
-                        <td>{{ pokemon_data['ability2_name'] }}</td>
-                        <td>{{ pokemon_data['base_experience'] }}</td>
-                        <td>{{ pokemon_data['attack_stat'] }}</td>
-                        <td>{{ pokemon_data['hp_stat'] }}</td>
-                        <td>{{ pokemon_data['defense_stat'] }}</td>
-                        <td>
-                            <form method="POST" action="/battle">
-                                <input type="hidden" name="pokemon_id" value="{{ pokemon_data['id'] }}">
-                                <button type="submit" class="btn btn-primary">Battle</button>
-                            </form>
-                        </td>
-                    </tr>
-                {% endfor %}
+                {% if user_data['username'] != current_user.username %}
+                    <div class="user-container">
+                        <div class="row">
+                            <h2>{{ user_data['username'] }}</h2>
+                        </div>
+                        <div class="row">
+                            {% for pokemon_info in user_data['pokemon'] %}
+                                <div class="col-md-2">
+                                    <div class="pokemon">
+                                        <img src="{{ pokemon_info['sprite_url'] }}" alt="{{ pokemon_info['name'] }}" class="pokemon-image">
+                                        <p>{{ pokemon_info['name'] }}</p>
+                                        <button class="battle-button btn btn-primary" data-username="{{ user_data['username'] }}" data-pokemon="{{ pokemon_info['name'] }}">Battle</button>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
             {% endfor %}
-        </tbody>
-    </table>
+        </section>
+
+        <section class="stadium">
+            <!-- Display Pokémon details, stats, and battle outcome here -->
+        </section>
+
+        <ul class="attack-list"></ul>
+    </main>
 {% endblock %}
 

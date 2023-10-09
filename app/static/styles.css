@@ -150,3 +150,16 @@ img {
   margin-top:20px;
   font-size: 50px;
 }
+
+/* Add custom styles for user container separation */
+.user-container {
+  margin-bottom: 20px; /* Adjust the margin as needed */
+  border: 2px solid #f0f0f0; /* Border to separate user containers */
+  padding: 10px;
+  background-color: #fff; /* White background for separation */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Optional shadow effect */
+}
+
+.user-pokemon-container {
+  margin-top: 10px; /* Add margin to separate users' Pokémon */
+}

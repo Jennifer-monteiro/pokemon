@@ -18,7 +18,7 @@ def get_pokemon_info():
     form = PokeForm()
     error_message = None
     
-    if request.method == 'POST' and form.validate_on_submit():  # Validate the form on submit
+    if request.method == 'POST':
         poke_name = form.pokemon.data.lower()
         response = requests.get(f'https://pokeapi.co/api/v2/pokemon/{poke_name}')
         
@@ -44,7 +44,6 @@ def get_pokemon_info():
             error_message = "The Pokémon you entered was not found. Please check the name or number and try again."
     
     return render_template('Pokedex.html', form=form, error_message=error_message)
-
 
 
 @app.route("/signup", methods=['GET', 'POST'])
@@ -198,10 +197,6 @@ def catch_pokemon():
 
 
 
-
-
-
-
 @app.route('/user_page', methods=['GET', 'POST'])
 @login_required
 def user_page():
@@ -220,10 +215,49 @@ def user_page():
     return render_template('user_page.html', captured_pokemon=captured_pokemon)
 
 
-
-@app.route('/battle', methods=['GET'])
+@app.route('/battle')
 @login_required
 def battle():
-    # Get all users except the current user
+    # Query the database to get a list of users, excluding the current user
     users = User.query.filter(User.id != current_user.id).all()
-    return render_template('battle.html', users=users)
+
+    # Initialize an empty list to store user and Pokémon data
+    user_pokemon_data = []
+
+    for user in users:
+        # Fetch Pokémon data for each user from the Pokédex API
+        user_pokemon = PokemonCapture.query.filter_by(user_id=user.id).all()
+
+        user_data = {
+            'username': user.username,
+            'pokemon': []
+        }
+
+        for pokemon in user_pokemon:
+            # You can fetch Pokémon data from the Pokédex API based on the Pokémon name
+            pokemon_name = pokemon.pokemon_name
+            pokemon_data = fetch_pokemon_data(pokemon_name)
+
+            if pokemon_data:
+                # Construct Pokémon data as needed, e.g., 'pokemon_data['sprites']['front_default']' for the sprite URL
+                pokemon_info = {
+                    'name': pokemon_name,
+                    'sprite_url': pokemon_data['sprites']['other']['official-artwork']['front_default']
+                }
+
+                user_data['pokemon'].append(pokemon_info)
+
+        user_pokemon_data.append(user_data)
+
+    return render_template('battle.html', user_pokemon_data=user_pokemon_data)
+
+def fetch_pokemon_data(pokemon_name):
+    # Use the Pokédex API or any other Pokémon API to fetch Pokémon data
+    # Example API request using the requests library
+    url = f'https://pokeapi.co/api/v2/pokemon/{pokemon_name.lower()}'
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        return response.json()
+
+    return None
