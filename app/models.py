@@ -18,15 +18,18 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(100), nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
-    
     # Define the relationship with PokemonCapture, using the back_populates attribute
     captured_pokemon = db.relationship('PokemonCapture', back_populates='user', secondary=teams)
+    wins = db.Column(db.Integer, default=0)  # Add wins field
+    losses = db.Column(db.Integer, default=0)  # Add losses field
 
     def __init__(self, fullname, username, email, password):
         self.fullname = fullname
         self.username = username
         self.email = email
         self.password = password
+        self.wins = 0  # Initialize wins to 0
+        self.losses = 0  # Initialize losses to 0
     
     def delete_captured_pokemon(self, pokemon_name):
         captured_pokemon = PokemonCapture.query.filter_by(
@@ -57,5 +60,13 @@ class PokemonCapture(db.Model):
 
 class BattleResult(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    winner_id = db.Column(db.Integer, nullable=False)
-    loser_id = db.Column(db.Integer, nullable=False)
+    winner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Foreign key to User model
+    loser_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Foreign key to User model
+
+    # Define relationships to User for winner and loser
+    winner = db.relationship('User', foreign_keys=[winner_id], backref='won_battles')
+    loser = db.relationship('User', foreign_keys=[loser_id], backref='lost_battles')
+
+    def __init__(self, winner_id, loser_id):
+        self.winner_id = winner_id
+        self.loser_id = loser_id

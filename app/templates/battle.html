@@ -17,21 +17,23 @@
                                     <div class="pokemon">
                                         <img src="{{ pokemon_info['sprite_url'] }}" alt="{{ pokemon_info['name'] }}" class="pokemon-image">
                                         <p>{{ pokemon_info['name'] }}</p>
-                                        <button class="battle-button btn btn-primary" data-username="{{ user_data['username'] }}" data-pokemon="{{ pokemon_info['name'] }}">Battle</button>
                                     </div>
                                 </div>
                             {% endfor %}
                         </div>
+                        <form method="POST" action="{{ url_for('battle_result') }}">
+                            <input type="hidden" name="opponent_username" value="{{ user_data['username'] }}">
+                            <button type="submit" class="battle-all-button btn btn-primary">Battle All</button>
+                        </form>
                     </div>
                 {% endif %}
             {% endfor %}
         </section>
 
         <section class="stadium">
-            <!-- Display Pokémon details, stats, and battle outcome here -->
+            <!-- This section will display Pokémon details, stats, and battle outcome for the selected battle -->
         </section>
 
         <ul class="attack-list"></ul>
     </main>
 {% endblock %}
-

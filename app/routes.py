@@ -8,6 +8,8 @@ from .forms import LoginForm, ProfileForm
 from flask_login import login_user, logout_user, current_user, login_required
 from datetime import datetime
 import random
+from .battle_logic import fetch_pokemon_data, calculate_pokemon_score, perform_battle
+
 
 @app.route("/")
 def index_html():
@@ -216,86 +218,91 @@ def user_page():
     return render_template('user_page.html', captured_pokemon=captured_pokemon)
 
 
-@app.route('/battle')
+@app.route('/battle', methods=['GET'])
 @login_required
 def battle():
-    # Query the database to get a list of users, excluding the current user
-    users = User.query.filter(User.id != current_user.id).all()
+    # Verify that the user is logged in (current_user is available)
+    if current_user.is_authenticated:
+        # Query the database to get a list of users, excluding the current user
+        users = User.query.filter(User.id != current_user.id).all()
 
-    # Initialize an empty list to store user and Pokémon data
-    user_pokemon_data = []
+        # Initialize an empty list to store user and Pokémon data
+        user_pokemon_data = []
 
-    for user in users:
-        # Fetch Pokémon data for each user from the Pokédex API
-        user_pokemon = PokemonCapture.query.filter_by(user_id=user.id).all()
+        for user in users:
+            # Fetch Pokémon data for each user from the Pokédex API
+            user_pokemon = PokemonCapture.query.filter_by(user_id=user.id).all()
 
-        user_data = {
-            'username': user.username,
-            'pokemon': []
-        }
+            user_data = {
+                'username': user.username,
+                'pokemon': []
+            }
 
-        for pokemon in user_pokemon:
-            # You can fetch Pokémon data from the Pokédex API based on the Pokémon name
-            pokemon_name = pokemon.pokemon_name
-            pokemon_data = fetch_pokemon_data(pokemon_name)
+            for pokemon in user_pokemon:
+                # You can fetch Pokémon data from the Pokédex API based on the Pokémon name
+                pokemon_name = pokemon.pokemon_name
+                pokemon_data = fetch_pokemon_data(pokemon_name)
 
-            if pokemon_data:
-                # Construct Pokémon data as needed, e.g., 'pokemon_data['sprites']['front_default']' for the sprite URL
-                pokemon_info = {
-                    'name': pokemon_name,
-                    'sprite_url': pokemon_data['sprites']['other']['official-artwork']['front_default']
-                }
+                if pokemon_data:
+                    # Construct Pokémon data as needed, e.g., 'pokemon_data['sprites']['front_default']' for the sprite URL
+                    pokemon_info = {
+                        'name': pokemon_name,
+                        'sprite_url': pokemon_data['sprites']['other']['official-artwork']['front_default']
+                    }
 
-                user_data['pokemon'].append(pokemon_info)
+                    user_data['pokemon'].append(pokemon_info)
 
-        user_pokemon_data.append(user_data)
+            user_pokemon_data.append(user_data)
 
-    return render_template('battle.html', user_pokemon_data=user_pokemon_data)
+        return render_template('battle.html', user_pokemon_data=user_pokemon_data)
+    else:
+        flash("Please log in to access the battle page.", "error")
+        return redirect(url_for('login_page'))
 
-def fetch_pokemon_data(pokemon_name):
-    # Use the Pokédex API or any other Pokémon API to fetch Pokémon data
-    # Example API request using the requests library
-    url = f'https://pokeapi.co/api/v2/pokemon/{pokemon_name.lower()}'
-    response = requests.get(url)
 
-    if response.status_code == 200:
-        return response.json()
 
-    return None
 
-import random
-
-@app.route('/battle', methods=['GET', 'POST'])
+@app.route('/battle_result', methods=['POST'])
+@login_required
 def battle_result():
     if request.method == 'POST':
-        # Get the opponent's username from the button click
+        # Get the opponent's username from the form
         opponent_username = request.form['opponent_username']
 
         # Retrieve the logged-in user and opponent's Pokemon from the database
         user = User.query.filter_by(username=current_user.username).first()
-        opponent = User.query.filter_by(username=opponent_username).first()
-
-        # Select a random Pokemon for the user and opponent
-        user_pokemon = random.choice(user.captured_pokemon)
-        opponent_pokemon = random.choice(opponent.captured_pokemon)
-
-        # Perform the battle logic to determine the winner
-        winner_user = BattleResult(user_pokemon, opponent_pokemon)
-
-        # Update user and opponent's wins/losses based on the battle result
-        if winner_user == user:
-            user.wins += 1
-            opponent.losses += 1
+        
+        if user is None:
+            print(f"User with username {current_user.username} not found.")
         else:
-            user.losses += 1
-            opponent.wins += 1
+            opponent = User.query.filter_by(username=opponent_username).first()
 
-        # Commit the changes to the database
-        db.session.commit()
+            # Initialize variables to keep track of wins
+            user_wins = 0
+            opponent_wins = 0
 
-        # Render the battle results page with winner and Pokemon information
-        return render_template('battle_results.html', winner_user=winner_user, user=user, opponent=opponent, user_pokemon=user_pokemon, opponent_pokemon=opponent_pokemon)
+            # Iterate through the user's Pokémon and perform battles with the opponent's Pokémon
+            for user_pokemon in user.captured_pokemon:
+                # Select a random Pokémon from the opponent
+                opponent_pokemon = random.choice(opponent.captured_pokemon)
 
-    # For GET request, show the list of users for the logged-in user to choose an opponent
+                # You should add your battle logic here to determine the winner
+                winner_user = perform_battle(user_pokemon, opponent_pokemon)
+
+                # Update user and opponent's wins based on the battle result
+                if winner_user == user:
+                    user_wins += 1
+                else:
+                    opponent_wins += 1
+
+            if user is not None:
+                user.wins += user_wins
+                # Commit the changes to the database
+                db.session.commit()
+
+            # Render the battle results page with winner 
+            return render_template('battle_results.html', user=user, opponent=opponent, user_wins=user_wins, opponent_wins=opponent_wins)
+
+    #  show the list of users for the logged-in user to choose an opponent
     users = User.query.filter(User.username != current_user.username).all()
     return render_template('battle.html', users=users)
