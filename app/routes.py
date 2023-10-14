@@ -1,6 +1,6 @@
 from app import app,db
 import requests
-from flask import redirect, render_template, request, url_for, flash
+from flask import redirect, render_template, request, url_for, flash, session
 from .forms import PokeForm
 from .forms import SignUpForm
 from .models import User, PokemonCapture, BattleResult
@@ -147,55 +147,85 @@ def update_email():
     else:
         flash('Please provide a valid email address', 'danger')
     return redirect(url_for('profile'))
-
+    
 @app.route('/catch_pokemon', methods=['GET', 'POST'])
 def catch_pokemon():
     action = request.form.get('action')
     pokemon_info = None
-    max_pokemon_reached = False  # Initialize max_pokemon_reached to False
-    
-    if action == 'catch':
-        if current_user.is_authenticated:
-            # Check if the user has already caught 5 Pokémon
-            if PokemonCapture.query.filter_by(user_id=current_user.id).count() >= 5:
-                max_pokemon_reached = True  # Set max_pokemon_reached to True
-                flash("Your Pokédex is full! You cannot catch more Pokémon.", 'error')
-            else:
-                random_pokemon_id = random.randint(1, 1000)  # Adjust the range based on your preference
-                response = requests.get(f'https://pokeapi.co/api/v2/pokemon/{random_pokemon_id}')
-                
-                if response.status_code == 200:
-                    data = response.json()
-                    pokemon_name = data['forms'][0]['name']  # Get the name of the captured Pokémon
-                    # Create a new PokemonCapture instance for the user
-                    new_pokemon_capture = PokemonCapture(
-                        pokemon_name=pokemon_name,
-                        user_id=current_user.id
-                    )
-                    db.session.add(new_pokemon_capture)
-                    db.session.commit()
-                    flash(f"You caught a {pokemon_name}!", 'success')  # Set a success flash message
-                    pokemon_info = {
-                        'name': pokemon_name,
-                        'sprite_frontdefault': data['sprites']['other']['official-artwork']['front_default']
-                    }
-                else:
-                    flash("Failed to catch a Pokémon. Try again.", 'error')
-        else:
-            flash("You must be logged in to catch Pokémon.", 'error')
-    
-    # Generate a random Pokémon if it's not a "Catch" action or after a successful capture
-    if action == 'skip' or pokemon_info is None:
-        random_pokemon_id = random.randint(1, 1000)  # Adjust the range based on your preference
+    max_pokemon_reached = False
+
+    if 'current_pokemon' not in session or action == 'skip':
+        # Generate a new Pokémon for the display if none is in the session or if 'Skip' is clicked
+        random_pokemon_id = random.randint(1, 1016)
         response = requests.get(f'https://pokeapi.co/api/v2/pokemon/{random_pokemon_id}')
+
         if response.status_code == 200:
             data = response.json()
             pokemon_info = {
                 'name': data['forms'][0]['name'],
                 'sprite_frontdefault': data['sprites']['other']['official-artwork']['front_default']
             }
-    
+
+            # Check if the user has already caught the current Pokémon
+            if current_user.is_authenticated:
+                user_id = current_user.id
+                if not PokemonCapture.query.filter_by(user_id=user_id, pokemon_name=pokemon_info['name']).first():
+                    # Store the current Pokémon in the session
+                    session['current_pokemon'] = pokemon_info
+                else:
+                    flash(f"You've already caught {pokemon_info['name']}! Try again.", 'error')
+                    pokemon_info = None
+            else:
+                flash("You must be logged in to catch Pokémon.", 'error')
+        else:
+            flash("Failed to fetch a Pokémon. Try again later.", 'error')
+            pokemon_info = None
+    else:
+        # Use the current Pokémon stored in the session
+        pokemon_info = session['current_pokemon']
+
+    if action == 'catch':
+        if current_user.is_authenticated:
+            if 'current_pokemon' in session:
+                current_pokemon = session['current_pokemon']
+
+                # Check if the user already has 5 Pokémon
+                user_id = current_user.id
+                if PokemonCapture.query.filter_by(user_id=user_id).count() >= 5:
+                    flash("Your Pokédex is full! You cannot catch more Pokémon.", 'error')
+                    max_pokemon_reached = True
+                else:
+                    # Capture the current Pokémon
+                    new_pokemon_capture = PokemonCapture(
+                        pokemon_name=current_pokemon['name'],
+                        user_id=current_user.id
+                    )
+                    db.session.add(new_pokemon_capture)
+                    db.session.commit()
+                    flash(f"You caught a {current_pokemon['name']}!", 'success')  # Display a success message
+                    del session['current_pokemon']  # Remove the current Pokémon from the session
+
+                    # Generate a new Pokémon for the display
+                    random_pokemon_id = random.randint(1, 1000)
+                    response = requests.get(f'https://pokeapi.co/api/v2/pokemon/{random_pokemon_id}')
+
+                    if response.status_code == 200:
+                        data = response.json()
+                        pokemon_info = {
+                            'name': data['forms'][0]['name'],
+                            'sprite_frontdefault': data['sprites']['other']['official-artwork']['front_default']
+                        }
+                    else:
+                        flash("Failed to fetch a Pokémon. Try again later.", 'error')
+            else:
+                flash("No Pokémon to catch. Click 'Catch' again.", 'error')
+        else:
+            flash("You must be logged in to catch Pokémon.", 'error')
+
     return render_template('catch_pokemon.html', pokemon_info=pokemon_info, max_pokemon_reached=max_pokemon_reached)
+
+
+
 
 
 
@@ -215,7 +245,30 @@ def user_page():
                 flash(f"{pokemon_name_to_delete} not found in your collection.", 'danger')
             return redirect(url_for('user_page'))
 
+    # Fetch and add additional data from the API for each captured Pokémon
+    for pokemon in captured_pokemon:
+        pokemon_name = pokemon.pokemon_name
+        pokemon_data = fetch_pokemon_data(pokemon_name)
+
+        if pokemon_data:
+            pokemon.sprite_frontdefault = pokemon_data['sprites']['other']['official-artwork']['front_default']
+            pokemon.type = pokemon_data['types'][0]['type']['name']
+            pokemon.ability1_name = pokemon_data['abilities'][0]['ability']['name']
+
+            # Check if there is a second ability before accessing it
+            if len(pokemon_data['abilities']) > 1:
+                pokemon.ability2_name = pokemon_data['abilities'][1]['ability']['name']
+            else:
+                pokemon.ability2_name = "N/A"  # Set a default value when the second ability doesn't exist
+
+            pokemon.base_experience = pokemon_data['base_experience']
+            pokemon.attack_stat = pokemon_data['stats'][1]['base_stat']
+            pokemon.hp_stat = pokemon_data['stats'][0]['base_stat']
+            pokemon.defense_stat = pokemon_data['stats'][2]['base_stat']
+
     return render_template('user_page.html', captured_pokemon=captured_pokemon)
+
+
 
 
 @app.route('/battle', methods=['GET'])

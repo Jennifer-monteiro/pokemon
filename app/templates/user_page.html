@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1 class= "poke_collection">Your Pokémon Collection</h1>
+    <h1 class="poke_collection">Your Pokémon Collection</h1>
     <div class="card-container">
         {% for pokemon in captured_pokemon %}
             <div class="card">
                 <div class="card__image-container">
-                    <img src="{{ pokemon.sprite_frontdefault }}" alt="{{ pokemon.pokemon_name }}" class="card__image">
+                    <div class="center-image">
+                        <img src="{{ pokemon.sprite_frontdefault }}" alt="{{ pokemon.pokemon_name }}" class="card__image">
+                    </div>
                 </div>
                 <div class="card__caption">
                     <span class="card__type card__type--{{ pokemon.type }}">{{ pokemon.type }}</span>
@@ -48,11 +50,4 @@
             </div>
         {% endfor %}
     </div>
-    <a href="/" class="btn btn-primary mt-3">Back to Home</a>
 {% endblock %}
-
-
-
-
-
-
